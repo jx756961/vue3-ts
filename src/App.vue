@@ -1,27 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <div class="wrapper">
+    vue3.0 + typescript
+    <TodoList />
+    <TodoInput />
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import TodoList from './components/TodoList/index.vue'; // ts 默认读取的是index.ts 文件, 所以这里的文件夹要把文件的 index.vue写全
+import TodoInput from './components/TodoInput/index.vue';
 
 export default defineComponent({
-  name: 'App',
   components: {
-    HelloWorld
+    TodoInput,
+    TodoList
   }
 });
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
