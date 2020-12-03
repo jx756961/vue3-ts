@@ -1,3 +1,1 @@
-export default {
-    // 默认导出一个对象
-}
+export const SET_TODO: string = 'SET_TODO'
