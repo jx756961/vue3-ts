@@ -15,17 +15,16 @@ export interface IUserTodo {
 }
 
 
-export function userTodo(): IUserTodo {
-    debugger
-
+export function userTodo(Istore: Store<any>): IUserTodo {
+    const store: Store<any> = Istore
     function setTodo(value: string): void {
-        const store:Store<any> = useStore()
         const  todo: ITodo = {
             id: new Date().getTime(),
             content: value,
             status: TODO_STATUS.WILLDO
         }
         store.dispatch(SET_TODO, todo)
+        console.log(store)
     }
 
     function setTodoList() {
