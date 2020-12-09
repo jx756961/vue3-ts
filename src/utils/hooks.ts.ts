@@ -1,23 +1,31 @@
 /**
- * 创建 hooks 需要的操作 ， 通过 return 导出
+ * 创建 hooks 需要的操作 ， 通过 return 闭包导出操作函数
  * @returns {{removeTodo: removeTodo, setTodoList: setTodoList, setDoing: setDoing, setTodo: setTodo, setStatus: setStatus}}
  */
-import {ITodo, TODO_STATUS} from "@/utils/typings";
 import {Store} from "vuex";
-import {SET_TODO, SET_TODO_LIST} from "@/store/actionType";
+import {ITodo, TODO_STATUS} from "@/utils/typings";
+import {SET_TODO, SET_TODO_LIST, REMOVE_TODO} from "@/store/actionType";
+import {watch} from 'vue';
 
-export interface IUserTodo {
+export interface IUserTodo { // userTodo 函数格式的接口
     setTodo: (value: string) => void;
     setTodoList: () => void;
-    removeTodo: () => void;
-    setStatus: () => void;
-    setDoing: () => void;
+    removeTodo: (id: number) => void;
+    setStatus: (id: number) => void;
+    setDoing: (id: number) => void;
 }
 
 
 export function userTodo(Istore: Store<any>): IUserTodo {
     const store: Store<any> = Istore
     const { setLocalList, getLocalList }: IUseLocalStoreage = useLocalStoreage()
+
+    watch(()=>{
+        return store.state.list
+    },(nV)=>{
+        setLocalList(nV)
+    })
+
     const todoList: ITodo[] = getLocalList()
     function setTodo(value: string): void {
         const todo: ITodo = {
@@ -26,24 +34,25 @@ export function userTodo(Istore: Store<any>): IUserTodo {
             status: TODO_STATUS.WILLDO
         }
         store.dispatch(SET_TODO, todo)
-        setLocalList(store.state.list)
-        console.log(store)
+
     }
 
     function setTodoList() {
         store.dispatch(SET_TODO_LIST, todoList)
     }
 
-    function removeTodo() {
-
+    function removeTodo(id: number): void {
+        console.log('removeTodo')
+        store.dispatch(REMOVE_TODO, id)
     }
 
-    function setStatus() {
-
+    function setStatus(id: number): void {
+        console.log('setStatus')
+        store.dispatch('SET_STATUS', id)
     }
 
-    function setDoing() {
-
+    function setDoing(id: number): void {
+        console.log('setDoing')
     }
 
     return {
@@ -55,9 +64,12 @@ export function userTodo(Istore: Store<any>): IUserTodo {
     }
 }
 
-// 数据存本地 useLocalStorage
 
-interface IUseLocalStoreage {
+/**
+ *  本地存储数据 useLocalStorage
+ */
+
+interface IUseLocalStoreage { // 定义数据函数格式的接口
     getLocalList: () => ITodo[];
     setLocalList: (todoList: ITodo[]) => void;
 
@@ -67,14 +79,16 @@ interface IUseLocalStoreage {
 export function useLocalStoreage(): IUseLocalStoreage {
 
     function getLocalList(): ITodo[] {
+        // JSON.parse() 处理json 数据时,如果 todoList 不存在为了避免报错使用字符串 [] 来设置默认值
         return JSON.parse(localStorage.getItem('todoList') || '[]')
     }
 
     function setLocalList(todoList: ITodo[]): void {
+        // 本地存储字符串数据 JSON.stringify( json )
         localStorage.setItem('todoList', JSON.stringify(todoList))
     }
 
-    return  {
+    return  { // 闭包返回函数
         getLocalList,
         setLocalList
     }

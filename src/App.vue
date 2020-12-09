@@ -1,6 +1,5 @@
 <template>
   <div class="wrapper">
-    vue3.0 + typescript
     <TodoList :todoList="todoList"/>
     <TodoInput />
   </div>
