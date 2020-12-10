@@ -4,7 +4,7 @@
  */
 import {Store} from "vuex";
 import {ITodo, TODO_STATUS} from "@/utils/typings";
-import {SET_TODO, SET_TODO_LIST, REMOVE_TODO} from "@/store/actionType";
+import {SET_TODO, SET_TODO_LIST, REMOVE_TODO, SET_DOING, SET_STATUS} from "@/store/actionType";
 import {watch} from 'vue';
 
 export interface IUserTodo { // userTodo 函数格式的接口
@@ -48,11 +48,12 @@ export function userTodo(Istore: Store<any>): IUserTodo {
 
     function setStatus(id: number): void {
         console.log('setStatus')
-        store.dispatch('SET_STATUS', id)
+        store.dispatch(SET_STATUS, id)
     }
 
     function setDoing(id: number): void {
         console.log('setDoing')
+        store.dispatch(SET_DOING, id)
     }
 
     return {

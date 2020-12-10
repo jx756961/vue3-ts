@@ -1,10 +1,10 @@
 <template>
     <div>
-        <input type="checkbox" @change="changeCheck">
+        <input type="checkbox" :checked="item.status === FINSHED" @click="setStatus(item.id)">
         <span>{{item.id}}</span>
         <button @click="removeTodo(item.id)">删除</button>
         <span>{{item.content}}</span>
-        <button v-if="item.status !== FINSHED" @click="setStatus(item.id)">{{item.status === DOING ? '正在做' :'将要操作'}}
+        <button v-if="item.status !== FINSHED" @click="setDoing(item.id)">{{item.status === DOING ? '正在做' :'将要操作'}}
         </button>
     </div>
 </template>
@@ -28,9 +28,6 @@
             //   case TODO_STATUS.FINSHED:
             //
             // }
-            const changeCheck = ((e: Event) => {
-                console.log(e.target)
-            })
 
             const removeTodo = (id: number): void => {
                 emit('removeTodo', id)
@@ -48,8 +45,7 @@
                 ...statusState,
                 removeTodo,
                 setDoing,
-                setStatus,
-                changeCheck
+                setStatus
 
             }
         }

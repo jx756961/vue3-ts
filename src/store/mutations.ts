@@ -1,5 +1,5 @@
 import {IState, ITodo, TODO_STATUS} from '@/utils/typings';
-import {REMOVE_TODO, SET_STATUS, SET_TODO, SET_TODO_LIST} from './actionType';
+import {REMOVE_TODO, SET_DOING, SET_STATUS, SET_TODO, SET_TODO_LIST} from './actionType';
 
 export default {
     [SET_TODO](state: IState, todo: ITodo): void {// 不需要返回值定义为 void
@@ -15,8 +15,26 @@ export default {
         state.list = state.list.filter((val)=> val.id != id) // 移除当前id数据
     },
     [SET_STATUS](state: IState, id: number): void {
-        state.list = state.list.map((val)=>{
+        state.list = state.list.map((val: ITodo)=>{
             if (val.id === id) {
+                switch (val.status) {
+                    case TODO_STATUS.WILLDO:
+                    case TODO_STATUS.DOING:
+                        Object.assign(val, { status: TODO_STATUS.FINSHED })
+                        break
+                    case TODO_STATUS.FINSHED:
+                        val.status = TODO_STATUS.WILLDO
+                        break
+                    default:
+                        break
+                }
+            }
+            return val
+        })
+    },
+    [SET_DOING](state: IState, id: number): void {
+        state.list = state.list.map((val: ITodo)=>{
+            if(val.id === id) {
                 switch (val.status) {
                     case TODO_STATUS.WILLDO:
                         Object.assign(val, { status: TODO_STATUS.DOING })
@@ -24,9 +42,12 @@ export default {
                     case TODO_STATUS.DOING:
                         Object.assign(val, { status: TODO_STATUS.WILLDO })
                         break
-                    case TODO_STATUS.FINSHED:
-                        Object.assign(val, { status: TODO_STATUS.WILLDO })
+                    default:
                         break
+                }
+            } else  {
+                if( val.status === TODO_STATUS.DOING ) {
+                    val.status = TODO_STATUS.WILLDO
                 }
             }
             return val
